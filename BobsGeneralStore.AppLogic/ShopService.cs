@@ -1,9 +1,5 @@
 ﻿using BobsGeneralStore.AppLogic.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BobsGeneralStore.AppLogic
 {
@@ -14,7 +10,7 @@ namespace BobsGeneralStore.AppLogic
         {
             _taxRate = 15; // TODO - Obtain Tax rate from Shop Setup File
         }
-        
+
         public decimal CalculateTax(decimal subTotal, int taxRate)
         {
 

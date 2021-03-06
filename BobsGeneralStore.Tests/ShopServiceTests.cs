@@ -1,8 +1,11 @@
 ﻿using BobsGeneralStore.AppLogic;
+using BobsGeneralStore.AppLogic.Data;
 using BobsGeneralStore.AppLogic.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Xunit;
+
 
 namespace BobsGeneralStore.Tests
 {
@@ -10,31 +13,18 @@ namespace BobsGeneralStore.Tests
     {
 
         private readonly ShopService shopServices;
+        private readonly TestData testData = new TestData();
         private int _taxRate;
         private readonly List<Product> _stockList;
-        private readonly List<CartItem>_itemsInCart;
+        private readonly List<CartItem> _itemsInCart;
+        private readonly Shop _bobsShop;
 
         public ShopServiceTests()
         {
             shopServices = new ShopService();
-
-            _stockList = new List<Product>
-            {
-                new Product { ProductCode = 001, ProductDescription = "Bar of soap", UnitPrice = 12m},
-                new Product { ProductCode = 002, ProductDescription = "Milk", UnitPrice = 14m },
-                new Product { ProductCode = 003, ProductDescription = "Car magazine", UnitPrice = 7.00m},
-                new Product { ProductCode = 004, ProductDescription = "Ice cream", UnitPrice = 20m},
-                new Product { ProductCode = 005, ProductDescription = "can of soup", UnitPrice = 4m }
-            };
-
-            _itemsInCart = new List<CartItem>
-            {
-                new CartItem { Item = _stockList[0], Quantity = 2},
-                new CartItem { Item = _stockList[1], Quantity = 1},
-                new CartItem { Item = _stockList[2], Quantity = 2},
-                new CartItem { Item = _stockList[3], Quantity = 1},
-                new CartItem { Item = _stockList[4], Quantity = 4},
-            };
+            _stockList = testData.GetStockList();
+            _itemsInCart = testData.LoadShoppingCart();
+            _bobsShop = testData.SetUpShop();
         }
 
         [Theory]
@@ -47,6 +37,7 @@ namespace BobsGeneralStore.Tests
             var calculatedTaxAmount = shopServices.CalculateTax(subTotal, taxRate);
 
             Assert.Equal(expectedTaxAmount, calculatedTaxAmount);
+
         }
 
         [Fact]
@@ -85,6 +76,29 @@ namespace BobsGeneralStore.Tests
 
             Assert.Equal(expectedSubtotalAmount, actualSubTotalAmount);
         }
+
+        [Fact]
+        public void ShopNameCannotBeBlankOrNull()
+        {
+            Assert.True(!string.IsNullOrWhiteSpace(_bobsShop.ShopName));
+        }
+
+        [Fact]
+        public void ShopHasValidTaxRate()
+        {
+            Assert.True(_bobsShop.ShopTaxRate >= 0);
+        }
+
+        [Fact]
+        public void ShopSetupFileExists()
+        {
+            var setupFilename = "ShopSetup.csv";
+
+            Assert.True(File.Exists(setupFilename));
+
+        }
+
+
 
         public void Dispose()
         {
