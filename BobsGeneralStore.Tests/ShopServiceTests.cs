@@ -84,6 +84,12 @@ namespace BobsGeneralStore.Tests
         }
 
         [Fact]
+        public void ShopPhoneNumberCannotBeBlankOrNull()
+        {
+            Assert.True(!string.IsNullOrWhiteSpace(_bobsShop.ShopPhoneNumber));
+        }
+
+        [Fact]
         public void ShopHasValidTaxRate()
         {
             Assert.True(_bobsShop.ShopTaxRate >= 0);
@@ -95,6 +101,14 @@ namespace BobsGeneralStore.Tests
             var setupFilename = "ShopSetup.csv";
 
             Assert.True(File.Exists(setupFilename));
+
+        }
+
+        [Fact]
+        public void ShopSetupFileIsNotEmpty()
+        {
+            var setupFileName = "ShopSetup.csv";
+            // TODO - check if file is empty
 
         }
 
